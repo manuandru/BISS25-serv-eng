@@ -30,14 +30,14 @@ app.post('/api/v1/talks', (req, res) => {
 });
 
 // Vote for a talk
-app.post('/talks/:talkId/vote', (req, res) => {
-    const id = parseInt(req.params.id, 10);
-    const talk = talks.find(t => t.talkId === id);
-    if (!talk) {
+app.post('/api/v1/talks/:talkId/vote', (req, res) => {
+    const talkId = req.params.talkId;
+    if (!talks.has(talkId)) {
         return res.status(404).json({ error: 'Talk not found.' });
     }
-    talk.votes += 1;
-    res.json(talk);
+    const votes = talks.get(talkId) + 1;
+    talks.set(talkId, votes);
+    res.json({ talkId, votes });
 });
 
 app.listen(PORT, () => {
